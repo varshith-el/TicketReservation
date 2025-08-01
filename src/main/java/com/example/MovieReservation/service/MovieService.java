@@ -1,6 +1,7 @@
 package com.example.MovieReservation.service;
 
 import com.example.MovieReservation.dto.MovieDto;
+import com.example.MovieReservation.dto.ShowTimeDto;
 import com.example.MovieReservation.entity.MovieEntity;
 import com.example.MovieReservation.entity.ShowTime;
 import com.example.MovieReservation.exception.ResourceNotFoundException;
@@ -14,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -70,15 +72,33 @@ public class MovieService {
     public List<ShowTime> getMovieShowTimes(Long movieId, LocalDate date) {
         movieRepository.findById(movieId)
                 .orElseThrow(() -> new ResourceNotFoundException("Movie not found"));
-
+        //specifc to H2 DB
         LocalDateTime startOfDay = date.atStartOfDay();
         LocalDateTime endOfDay = date.plusDays(1).atStartOfDay();
 
-        return showTimeRepository.findByMovieIdAndDate(movieId, date);
+        return showTimeRepository.findByMovieIdAndDate(movieId, startOfDay, endOfDay);
     }
 
-    public List<ShowTime> getShowTimesByDate(LocalDate date) {
-        return showTimeRepository.findByDate(date);
+    public List<ShowTimeDto> getShowTimesByDate(LocalDate date) {
+        //specifc to H2 DB
+        LocalDateTime startOfDay = date.atStartOfDay();
+        LocalDateTime endOfDay = date.plusDays(1).atStartOfDay();
+        List<ShowTime> showTimes = showTimeRepository.findByDate(startOfDay, endOfDay);
+
+        return showTimes.stream()
+                .map(st -> new ShowTimeDto(
+                        st.getId(),
+                        st.getShowDateTime(),
+                        st.getPrice(),
+                        st.getTheaterName(),
+                        st.getTotalSeats(),
+                        st.getMovie().getId(),
+                        st.getMovie().getTitle(),
+                        st.getMovie().getPosterUrl(),
+                        st.getMovie().getGenre().name(),
+                        st.getMovie().getDurationMinutes()
+                ))
+                .collect(Collectors.toList());
     }
 
     private MovieDto convertToDto(MovieEntity movie) {
