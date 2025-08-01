@@ -2,6 +2,7 @@ package com.example.MovieReservation.controller;
 
 
 import com.example.MovieReservation.dto.MovieDto;
+import com.example.MovieReservation.entity.MovieEntity;
 import com.example.MovieReservation.entity.ShowTime;
 import com.example.MovieReservation.service.MovieService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -55,5 +56,11 @@ public class MovieController {
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
         List<ShowTime> showTimes = movieService.getShowTimesByDate(date);
         return ResponseEntity.ok(showTimes);
+    }
+
+    @PostMapping()
+    public ResponseEntity<String> addMovie(@RequestBody MovieDto moviedto){
+        movieService.createMovie(moviedto);
+        return ResponseEntity.ok("Movie Created");
     }
 }
