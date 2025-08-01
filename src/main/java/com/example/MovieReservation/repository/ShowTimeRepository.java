@@ -13,11 +13,14 @@ import java.util.List;
 @Repository
 public interface ShowTimeRepository extends JpaRepository<ShowTime, Long> {
 
-    @Query("SELECT st FROM ShowTime st WHERE st.movie.id = :movieId AND DATE(st.showDateTime) = :date ORDER BY st.showDateTime")
-    List<ShowTime> findByMovieIdAndDate(@Param("movieId") Long movieId, @Param("date") LocalDate date);
+    @Query("SELECT st FROM ShowTime st WHERE st.movie.id = :movieId AND st.showDateTime >= :start AND st.showDateTime < :end ORDER BY st.showDateTime")
+    List<ShowTime> findByMovieIdAndDate(@Param("movieId") Long movieId,
+                                        @Param("start") LocalDateTime start,
+                                        @Param("end") LocalDateTime end);
 
-    @Query("SELECT st FROM ShowTime st WHERE DATE(st.showDateTime) = :date ORDER BY st.showDateTime")
-    List<ShowTime> findByDate(@Param("date") LocalDate date);
+    @Query("SELECT st FROM ShowTime st WHERE st.showDateTime >= :start AND st.showDateTime < :end ORDER BY st.showDateTime")
+    List<ShowTime> findByDate(@Param("start") LocalDateTime start,
+                              @Param("end") LocalDateTime end);
 
     @Query("SELECT st FROM ShowTime st WHERE st.showDateTime >= :startTime AND st.showDateTime < :endTime")
     List<ShowTime> findByDateTimeBetween(@Param("startTime") LocalDateTime startTime, @Param("endTime") LocalDateTime endTime);

@@ -2,6 +2,7 @@ package com.example.MovieReservation.controller;
 
 
 import com.example.MovieReservation.dto.MovieDto;
+import com.example.MovieReservation.dto.ShowTimeDto;
 import com.example.MovieReservation.entity.MovieEntity;
 import com.example.MovieReservation.entity.ShowTime;
 import com.example.MovieReservation.service.MovieService;
@@ -52,9 +53,9 @@ public class MovieController {
     }
 
     @GetMapping("/showtimes")
-    public ResponseEntity<List<ShowTime>> getShowTimesByDate(
+    public ResponseEntity<List<ShowTimeDto>> getShowTimesByDate(
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
-        List<ShowTime> showTimes = movieService.getShowTimesByDate(date);
+        List<ShowTimeDto> showTimes = movieService.getShowTimesByDate(date);
         return ResponseEntity.ok(showTimes);
     }
 
