@@ -6,6 +6,8 @@ import com.example.MovieReservation.dto.SignupRequest;
 import com.example.MovieReservation.entity.UserEntity;
 import com.example.MovieReservation.security.JwtTokenProvider;
 import com.example.MovieReservation.service.UserService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -19,6 +21,7 @@ import java.util.Map;
 @RestController
 @RequestMapping("/api/auth")
 @CrossOrigin(origins = "*")
+@Tag(name = "Authentication", description = "Endpoints for user registration and login")
 public class AuthController {
 
     @Autowired
@@ -31,6 +34,7 @@ public class AuthController {
     private JwtTokenProvider tokenProvider;
 
     @PostMapping("/signup")
+    @Operation(summary = "Register a new user")
     public ResponseEntity<?> registerUser(@Valid @RequestBody SignupRequest signUpRequest) {
         try {
             UserEntity user = userService.createUser(
@@ -51,6 +55,7 @@ public class AuthController {
     }
 
     @PostMapping("/login")
+    @Operation(summary = "Authenticate and generate JWT token")
     public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
         try {
             System.out.println(">> JWT created:" + loginRequest.getEmail());

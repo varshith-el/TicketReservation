@@ -28,7 +28,6 @@ public class JwtTokenProvider {
                 .setExpiration(expiryDate)
                 .signWith(SignatureAlgorithm.HS256, key)
                 .compact();
-        System.out.println(">> JWT created: " + jwt);
         return jwt;
     }
 
